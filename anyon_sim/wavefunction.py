@@ -14,7 +14,6 @@ Refs. in the accompanying README).
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from functools import cache
 from typing import Protocol
 
 import numpy as np
@@ -129,7 +128,6 @@ class CompositeFermionWavefunction(Wavefunction):
     # Naive amplitude implementation
     # ------------------------------------------------------------------
 
-    @cache
     def amplitude(self, positions: np.ndarray) -> complex:  # noqa: D401
         """Return ψ_CF using a simplified Jastrow-only model.
 

@@ -18,10 +18,25 @@ try:
 except Exception:  # pragma: no cover
     __version__ = "0.0.0"
 
-# Re-export most used high-level helpers
-try:
-    from .examples import run_sample  # type: ignore  # noqa: E402
-except ImportError:  # pragma: no cover
-    # The submodule may not yet be built when linting.
-    def run_sample(*args, **kwargs):  # type: ignore
-        raise RuntimeError("examples module not available yet") 
+# Lazy re-export of high-level helper -------------------------------------------------
+
+# Importing `anyon_sim.examples` at *package import time* triggers a Python runtime
+# warning (module already in sys.modules) when the same submodule is executed via
+# `python -m anyon_sim.examples`.  To avoid this, we provide a **lazy loader** that
+# resolves the implementation only when the helper is first called.
+
+from types import ModuleType as _ModuleType
+from typing import Any as _Any
+
+
+def _lazy_run_sample(*args: _Any, **kwargs: _Any):  # type: ignore
+    from importlib import import_module as _import_module
+
+    _examples: _ModuleType = _import_module(".examples", package=__name__)
+    _actual = getattr(_examples, "run_sample")
+    globals()["run_sample"] = _actual  # Cache for subsequent calls
+    return _actual(*args, **kwargs)
+
+
+# Expose under the expected name
+run_sample = _lazy_run_sample  # type: ignore 

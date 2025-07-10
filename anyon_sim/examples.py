@@ -61,4 +61,13 @@ def run_sample():
         import matplotlib.pyplot as plt
 
         plt.title(f"Binding energies Δ_q for ν={FF_label}")
-    plt.show() 
+    plt.show()
+
+
+# ---------------------------------------------------------------------------
+# Allow `python -m anyon_sim.examples` to run the demo directly
+# ---------------------------------------------------------------------------
+
+
+if __name__ == "__main__":
+    run_sample() 
